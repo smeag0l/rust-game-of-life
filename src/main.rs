@@ -5,7 +5,7 @@ extern crate termion;
 use rand::Rng;
 use std::thread;
 use std::time::Duration;
-use termion::{clear};
+use termion::{clear, cursor, color,style};
 
 
 const ALIVE: char = '#';
@@ -23,7 +23,7 @@ struct State {
 
 /// Render the state to the terminal
 fn render(state: &State) {
-    println!("{}", clear::All);
+    println!("{}", cursor::Goto(1, 1));
     for x in 0..HEIGHT - 1 {
         for y in 0..WIDTH - 1 {
             let state = state.world[x][y];
@@ -34,7 +34,7 @@ fn render(state: &State) {
         }
         println!("");
     }
-    println!("Generation:{} , Alive: {}", state.generation, state.living);
+    println!("{}Generation:{} , Alive: {}{}", color::Fg(color::Blue),state.generation, state.living, style::Reset);
 }
 
 /// Update the game state
@@ -148,7 +148,7 @@ fn init() -> State {
 
 fn main() {
     let mut state = init();
-
+    print!("{}{}{}",cursor::Hide, clear::All, cursor::Goto(1, 1));
     loop {
         render(&state);
         if state.living <= 0 || state.generation == std::u32::MAX {
