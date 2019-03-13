@@ -148,7 +148,8 @@ fn init() -> State {
 
 fn main() {
     let mut state = init();
-    print!("{}{}{}",cursor::Hide, clear::All, cursor::Goto(1, 1));
+    //print!("{}{}{}",cursor::Hide, clear::All, cursor::Goto(1, 1));
+    print!("{}{}",clear::All, cursor::Goto(1, 1));
     loop {
         render(&state);
         if state.living <= 0 || state.generation == std::u32::MAX {
