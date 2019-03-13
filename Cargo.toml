@@ -2,7 +2,7 @@
 name = "game_of_life"
 version = "0.1.0"
 authors = ["smeag0l <dan.needham@protonmail.com>"]
-edition = "2019"
+edition = "2018"
 
 [dependencies]
 termion = "*"
