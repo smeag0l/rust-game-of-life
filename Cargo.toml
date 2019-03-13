@@ -1,0 +1,9 @@
+[package]
+name = "game_of_life"
+version = "0.1.0"
+authors = ["dan-at-mimas <dan.needham@jisc.ac.uk>"]
+edition = "2018"
+
+[dependencies]
+termion = "*"
+rand = "*"
