@@ -7,6 +7,7 @@ use std::thread;
 use std::time::Duration;
 use termion::clear;
 
+
 const ALIVE: char = '#';
 const WIDTH: usize = 40;
 const HEIGHT: usize = 20;
@@ -33,7 +34,7 @@ fn render(state: &State) {
         }
         println!("");
     }
-    println!("Generation:{} , Living: {}", state.generation, state.living);
+    println!("Generation:{} , Alive: {}", state.generation, state.living);
 }
 
 /// Update the game state
@@ -115,7 +116,11 @@ fn alive_neighbours(row: usize, col: usize, world: &World) -> u8 {
     alive_neighbours
 }
 
-// Initialise the game state
+/// Initialise the game state
+/// 
+/// Creates a new initial game state,
+/// randomising the initial living cells
+
 fn init() -> State {
     let world: World = [[0; WIDTH]; HEIGHT];
     let generation = 0;
@@ -129,7 +134,7 @@ fn init() -> State {
     for x in 0..HEIGHT - 1 {
         for y in 0..WIDTH - 1 {
             let r = rand::thread_rng().gen_range(0, 100);
-            if r > 75 {
+            if r > 80 {
                 state.world[x][y] = 1;
                 state.living += 1;
             } else {
@@ -146,7 +151,7 @@ fn main() {
 
     loop {
         render(&state);
-        if state.living <= 0 {
+        if state.living <= 0 || state.generation == std::u32::MAX {
             break;
         }
         state = update(&state);
