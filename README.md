@@ -1,6 +1,20 @@
 # Rust Game of Life
 
-A implementation of John Conway's Game of Life in Rust.
+A simple implementation of John Conway's Game of Life in Rust.
+
+## Prerequisites
+
+[The Rust compiler](https://github.com/rust-lang/rust)
+
+## Usage
+
+```bash
+cargo run
+```
+
+## Makes use of
+
+[Termion](https://github.com/redox-os/termion)
 
 ## License
 
