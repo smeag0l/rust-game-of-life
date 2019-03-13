@@ -5,7 +5,7 @@ extern crate termion;
 use rand::Rng;
 use std::thread;
 use std::time::Duration;
-use termion::clear;
+use termion::{clear};
 
 
 const ALIVE: char = '#';
