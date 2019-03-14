@@ -5,7 +5,8 @@ extern crate termion;
 use rand::Rng;
 use std::thread;
 use std::time::Duration;
-use termion::{clear, cursor, color,style};
+use termion::{clear, cursor, color,style, raw::IntoRawMode, async_stdin};
+use std::io::{Write, Read, stdout};
 
 
 const ALIVE: char = '#';
@@ -23,18 +24,29 @@ struct State {
 
 /// Render the state to the terminal
 fn render(state: &State) {
-    println!("{}", cursor::Goto(1, 1));
+    let stdout = stdout();
+    let mut stdout = stdout.lock().into_raw_mode().unwrap();
+    write!(stdout,"{}", cursor::Goto(1, 1)).unwrap();
+    stdout.flush().unwrap();
+    write!(stdout,"╔═══════════════════════════════════════╗\r\n").unwrap();
+
+
     for x in 0..HEIGHT - 1 {
+        write!(stdout,"║").unwrap();
         for y in 0..WIDTH - 1 {
             let state = state.world[x][y];
             match state {
-                1 => print!("{}", ALIVE),
-                _ => print!(" "),
+                1 => write!(stdout,"{}", ALIVE).unwrap(),
+                _ => write!(stdout," ").unwrap(),
             }
         }
-        println!("");
+        write!(stdout,"║\r\n").unwrap();
     }
-    println!("{}Generation:{} , Alive: {}{}", color::Fg(color::Blue),state.generation, state.living, style::Reset);
+    write!(stdout,"╚═══════════════════════════════════════╝\r\n").unwrap();
+    write!(stdout,"{}Generation:{} , Alive: {}{}\r\n", color::Fg(color::Blue),state.generation, state.living, style::Reset).unwrap();
+    write!(stdout,"{}(q)uit (p)ause {}\r\n", color::Fg(color::Green), style::Reset).unwrap();
+    write!(stdout,"{}An implementation of the Game of Life, by smeag0l{}\r\n", color::Fg(color::Cyan), style::Reset).unwrap();
+    stdout.flush().unwrap();
 }
 
 /// Update the game state
@@ -147,16 +159,34 @@ fn init() -> State {
 
 
 fn main() {
+    let mut stdout = stdout().into_raw_mode().unwrap();
+    let mut stdin = async_stdin().bytes();
     let mut state = init();
-    //print!("{}{}{}",cursor::Hide, clear::All, cursor::Goto(1, 1));
-    print!("{}{}",clear::All, cursor::Goto(1, 1));
+    let mut paused:bool = false;
+    write!(stdout,"{}{}{}",cursor::Hide, clear::All, cursor::Goto(1, 1)).unwrap();
+    stdout.flush().unwrap();
     loop {
-        render(&state);
-        if state.living <= 0 || state.generation == std::u32::MAX {
-            break;
+
+        if ! paused {
+            render(&state);
+            if state.living <= 0 || state.generation == std::u32::MAX {
+                break;
+            }
+    
+            state = update(&state);
         }
-        state = update(&state);
-        thread::sleep(Duration::from_millis(300));
+
+        // Poll for input
+        let b = stdin.next();
+        if let Some(Ok(b'q')) = b {
+            write!(stdout,"{}", cursor::Show).unwrap();
+            break;
+        } else if let Some(Ok(b'p')) = b {
+            paused = if paused {false} else {true};
+        }
+         
+        
+         thread::sleep(Duration::from_millis(300));
     }
 }
 
