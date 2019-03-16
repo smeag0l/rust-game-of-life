@@ -44,7 +44,7 @@ fn render(state: &State) {
     }
     write!(stdout,"╚═══════════════════════════════════════╝\r\n").unwrap();
     write!(stdout,"{}Generation:{} , Alive: {}{}\r\n", color::Fg(color::Blue),state.generation, state.living, style::Reset).unwrap();
-    write!(stdout,"{}(q)uit (p)ause {}\r\n", color::Fg(color::Green), style::Reset).unwrap();
+    write!(stdout,"{}(q)uit (p)ause (r)eset {}\r\n", color::Fg(color::Green), style::Reset).unwrap();
     write!(stdout,"{}An implementation of the Game of Life, by smeag0l{}\r\n", color::Fg(color::Cyan), style::Reset).unwrap();
     stdout.flush().unwrap();
 }
@@ -183,7 +183,10 @@ fn main() {
             break;
         } else if let Some(Ok(b'p')) = b {
             paused = if paused {false} else {true};
+        } else if let Some(Ok(b'r')) = b {
+            state = init();
         }
+
          
         
          thread::sleep(Duration::from_millis(300));

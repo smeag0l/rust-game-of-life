@@ -18,6 +18,12 @@ cargo build
 cargo run
 ```
 
+## Usage
+
+q - quit
+p - pause
+r - reset
+
 ## Makes use of
 
 [Termion](https://github.com/redox-os/termion)
